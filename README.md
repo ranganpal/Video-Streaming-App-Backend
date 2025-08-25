@@ -27,19 +27,19 @@ A backend API for a video streaming platform, built with Node.js, Express, and M
 
 ## 📂 Project Structure
 ```bash
-.
-├── .env                         # Environment variables
-├── .gitignore                   # Git ignore rules
-├── .prettierignore              # Prettier ignore rules
-├── .prettierrc                  # Prettier configuration
-├── package.json                 # NPM dependencies and scripts
-├── README.md                    # Project documentation
+Video-Streaming-App-Backend
+├── .env                                # Environment variables
+├── .gitignore                          # Git ignore rules
+├── .prettierignore                     # Prettier ignore rules
+├── .prettierrc                         # Prettier configuration
+├── package.json                        # NPM dependencies and scripts
+├── README.md                           # Project documentation
 ├── public/
-│   └── temp/                    # Temporary file storage for uploads
+│   └── temp/                           # Temporary file storage for uploads
 ├── src/
-│   ├── app.js                   # Express app setup
-│   ├── constants.js             # Project constants
-│   ├── index.js                 # Entry point
+│   ├── app.js                          # Express app setup
+│   ├── constants.js                    # Project constants
+│   ├── index.js                        # Entry point
 │   ├── controllers/
 │   │   ├── subscription.controller.js  # Route handlers for subscriptions
 │   │   ├── user.controller.js          # Route handlers for users
@@ -81,7 +81,7 @@ A backend API for a video streaming platform, built with Node.js, Express, and M
 
 1.  **Clone the repository**
     ```sh
-    git clone <repo-url>
+    git clone https://github.com/ranganpal/Video-Streaming-App-Backend.git
     cd Video-Streaming-App-Backend
     ```
 
