@@ -2,6 +2,8 @@
 
 A backend API for a video streaming platform, built with Node.js, Express, and MongoDB. Features include user authentication, video upload and management, subscriptions, view tracking, and more.
 
+🔗 **Live Demo:** [https://appwrite-blog-app-iota.vercel.app](https://appwrite-blog-app-iota.vercel.app)
+
 ---
 
 ## 🚀 Features
