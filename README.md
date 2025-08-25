@@ -27,37 +27,44 @@ A backend API for a video streaming platform, built with Node.js, Express, and M
 
 ## 📂 Project Structure
 ```bash
-src/
-├── app.js                          # Express app setup
-├── constants.js                    # Project constants
-├── index.js                        # Entry point
-├── controllers/
-│   ├── subscription.controller.js  # Route handlers for subscriptions
-│   ├── user.controller.js          # Route handlers for users
-│   ├── video.controller.js         # Route handlers for videos
-│   └── view.controller.js          # Route handlers for views
-├── database/
-│   └── index.js                    # MongoDB connection
-├── middlewares/
-│   ├── auth.middleware.js          # JWT and ownership checks
-│   └── multer.middleware.js        # File upload config
-├── models/
-│   ├── subscription.model.js       # Mongoose subscription schema
-│   ├── user.model.js               # Mongoose user schema
-│   ├── video.model.js              # Mongoose video schema
-│   └── view.model.js               # Mongoose view schema
-├── routes/
-│   ├── subscription.route.js       # Express router for subscriptions
-│   ├── user.router.js              # Express router for users
-│   ├── video.route.js              # Express router for videos
-│   └── view.route.js               # Express router for views
-└── utils/
-    ├── apiError.js                 # Utility class for custom API errors
-    ├── apiResponse.js              # Utility class for standard API responses
-    ├── asyncHandler.js             # Utility function for async/await handling
-    └── cloudinary.js               # Cloudinary integration utility
-└── public/
-    └── temp/                       # Temporary file storage for uploads
+.
+├── .env                         # Environment variables
+├── .gitignore                   # Git ignore rules
+├── .prettierignore              # Prettier ignore rules
+├── .prettierrc                  # Prettier configuration
+├── package.json                 # NPM dependencies and scripts
+├── README.md                    # Project documentation
+├── public/
+│   └── temp/                    # Temporary file storage for uploads
+├── src/
+│   ├── app.js                   # Express app setup
+│   ├── constants.js             # Project constants
+│   ├── index.js                 # Entry point
+│   ├── controllers/
+│   │   ├── subscription.controller.js  # Route handlers for subscriptions
+│   │   ├── user.controller.js          # Route handlers for users
+│   │   ├── video.controller.js         # Route handlers for videos
+│   │   └── view.controller.js          # Route handlers for views
+│   ├── database/
+│   │   └── index.js                    # MongoDB connection
+│   ├── middlewares/
+│   │   ├── auth.middleware.js          # JWT and ownership checks
+│   │   └── multer.middleware.js        # File upload config
+│   ├── models/
+│   │   ├── subscription.model.js       # Mongoose subscription schema
+│   │   ├── user.model.js               # Mongoose user schema
+│   │   ├── video.model.js              # Mongoose video schema
+│   │   └── view.model.js               # Mongoose view schema
+│   ├── routes/
+│   │   ├── subscription.route.js       # Express router for subscriptions
+│   │   ├── user.router.js              # Express router for users
+│   │   ├── video.route.js              # Express router for videos
+│   │   └── view.route.js               # Express router for views
+│   └── utils/
+│       ├── apiError.js                 # Utility class for custom API errors
+│       ├── apiResponse.js              # Utility class for standard API responses
+│       ├── asyncHandler.js             # Utility function for async/await handling
+│       └── cloudinary.js               # Cloudinary integration utility
 ```
   
 ---
