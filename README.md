@@ -2,7 +2,7 @@
 
 A backend API for a video streaming platform, built with Node.js, Express, and MongoDB. Features include user authentication, video upload and management, subscriptions, view tracking, and more.
 
-🔗 **Live Demo:** []()
+🔗 **Live Demo:** [https://video-streaming-app-backend-q1zx.onrender.com/api-docs](https://video-streaming-app-backend-q1zx.onrender.com/api-docs)
 
 ---
 
