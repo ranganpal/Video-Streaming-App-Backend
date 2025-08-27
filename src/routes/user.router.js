@@ -5,19 +5,20 @@ import {
   registerUser,
   loginUser,
   logoutUser,
-  regenerateTokens,
   getCurrentUser,
-  changeEmail,
-  changeFullname,
-  changePassword,
-  changeAvatar,
-  changeCoverImage,
-  deleteUser,
   getUserChannelProfile,
+  regenerateTokens,
+  updateEmail,
+  updateFullname,
+  updatePassword,
+  updateAvatar,
+  updateCoverImage,
+  deleteUser
 } from "../controllers/user.controller.js"
 
 const router = Router()
 
+// post
 router.route("/register").post(
   upload.fields([
     {
@@ -31,33 +32,25 @@ router.route("/register").post(
   ]),
   registerUser
 )
-router.route("/login").post(loginUser)
+router.route("/login").post(upload.none(), loginUser)
+
+// get
+router.route("/regenerate-tokens").get(regenerateTokens)
 
 // secured routes
-router.route("/logout").get(verifyJWT, logoutUser)
-router.route("/regenerate-tokens").get(regenerateTokens)
-router.route("/current-user").get(verifyJWT, getCurrentUser)
+router.use(verifyJWT)
+router.route("/logout").get(logoutUser)
+router.route("/current-user").get(getCurrentUser)
+router.route("/channel-profile/:username").get(getUserChannelProfile)
 
-router.route("/update-email").patch(verifyJWT, changeEmail)
-router.route("/update-fullname").patch(verifyJWT, changeFullname)
-router.route("/update-password").patch(verifyJWT, changePassword)
+// patch
+router.route("/update-email").patch(upload.none(), updateEmail)
+router.route("/update-fullname").patch(upload.none(), updateFullname)
+router.route("/update-password").patch(upload.none(), updatePassword)
+router.route("/update-avatar").patch(upload.single("avatar"), updateAvatar)
+router.route("/update-cover-image").patch(upload.single("coverImage"), updateCoverImage)
 
-router.route("/update-avatar").patch(
-  verifyJWT,
-  upload.single("avatar"),
-  changeAvatar
-)
-router.route("/update-cover-image").patch(
-  verifyJWT,
-  upload.single("coverImage"),
-  changeCoverImage
-)
-
-router.route("/delete").delete(verifyJWT, deleteUser)
-
-router.route("/channel-profile/:username").get(
-  verifyJWT,
-  getUserChannelProfile
-)
+// delete
+router.route("/delete").delete(deleteUser)
 
 export default router

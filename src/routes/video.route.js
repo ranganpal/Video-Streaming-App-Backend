@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import {
-  getVideos,
-  publishVideo,
-  getVideo,
-  changeVideoFile,
-  changeThumbnail,
-  changeTitle,
-  changeDescription,
-  deleteVideo,
-  togglePublishStatus
+  uploadVideo,
+  getAllVideos,
+  getVideoById,
+  updateTitle,
+  updateDescription,
+  updateVideoFile,
+  updateThumbnail,
+  togglePublishStatus,
+  deleteVideo
 } from "../controllers/video.controller.js"
 import { upload } from "../middlewares/multer.middleware.js"
 import { verifyJWT, verifyVideoOwnership } from "../middlewares/auth.middleware.js"
@@ -16,48 +16,54 @@ import { verifyJWT, verifyVideoOwnership } from "../middlewares/auth.middleware.
 const router = Router()
 router.use(verifyJWT)
 
-router
-  .route("/")
-  .get(getVideos)
-  .post(
-    upload.fields([
-      {
-        name: "videoFile",
-        maxCount: 1,
-      },
-      {
-        name: "thumbnail",
-        maxCount: 1,
-      }
-    ]),
-    publishVideo
-  )
+// post
+router.route("/upload").post(
+  upload.fields([
+    {
+      name: "videoFile",
+      maxCount: 1,
+    },
+    {
+      name: "thumbnail",
+      maxCount: 1,
+    }
+  ]),
+  uploadVideo
+)
 
-router.route("/:videoId").get(getVideo)
+// get
+router.route("/").get(getAllVideos)  
+router.route("/:videoId").get(getVideoById)
 
+// patch
+router.route("/update-title/:videoId").patch(
+  verifyVideoOwnership,
+  upload.none(),
+  updateTitle
+)
+router.route("/update-description/:videoId").patch(
+  verifyVideoOwnership, 
+  upload.none(),
+  updateDescription
+)
 router.route("/update-video-file/:videoId").patch(
   verifyVideoOwnership,
   upload.single("videoFile"),
-  changeVideoFile
+  updateVideoFile
 )
 router.route("/update-thumbnail/:videoId").patch(
   verifyVideoOwnership,
   upload.single("thumbnail"),
-  changeThumbnail
-)
-router.route("/update-title/:videoId").patch(
-  verifyVideoOwnership,
-  changeTitle
-)
-router.route("/update-description/:videoId").patch(
-  verifyVideoOwnership, 
-  changeDescription
+  updateThumbnail
 )
 router.route("/toggle-publish-status/:videoId").patch(
   verifyVideoOwnership, 
+  upload.none(),
   togglePublishStatus
 )
-router.route("/:videoId").delete(
+
+// delete
+router.route("/delete/:videoId").delete(
   verifyVideoOwnership, 
   deleteVideo
 )

@@ -1,3 +1,11 @@
+/**
+ * Custom error class for API errors.
+ *
+ * @class ApiError
+ * @extends Error
+ * @param {number} statusCode - HTTP status code for the error
+ * @param {string} message - Error message
+ */
 export class ApiError extends Error {
   constructor(
     statusCode,

@@ -9,7 +9,10 @@ import {
 const router = Router()
 router.use(verifyJWT)
 
+// post
 router.route("/c/:channelId").post(toggleSubscription)
+
+// get
 router.route("/subscribed-channels").get(getSubscribedChannels)
 router.route("/channel-subscribers").get(getChannelSubscribers)
 

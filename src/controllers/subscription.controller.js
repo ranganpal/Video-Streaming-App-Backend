@@ -5,6 +5,22 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { Subscription } from "../models/subscription.model.js"
 
 
+/**
+ * @swagger
+ * /subscriptions/c/{channelId}:
+ *   post:
+ *     summary: Toggle subscription to a channel
+ *     tags: [Subscription]
+ *     parameters:
+ *       - in: path
+ *         name: channelId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Subscription toggled successfully
+ */
 const toggleSubscription = asyncHandler(async (req, res) => {
   const channelId = req.params?.channelId
   const subscriberId = req.user?._id
@@ -48,8 +64,40 @@ const toggleSubscription = asyncHandler(async (req, res) => {
     )
 })
 
+/**
+ * @swagger
+ * /subscriptions/subscribed-channels:
+ *   get:
+ *     summary: Get all channels the user is subscribed to
+ *     tags: [Subscription]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortType
+ *         schema:
+ *           type: string
+ *           enum: [inc, dec]
+ *     responses:
+ *       200:
+ *         description: List of subscribed channels
+ */
 const getSubscribedChannels = asyncHandler(async (req, res) => {
-  const { page, limit, query, sortBy, sortType } = req.query  
+  const { page, limit, search, sortBy, sortType } = req.query  
 
   const pipeline = [
     {
@@ -80,12 +128,12 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     }
   ]
 
-  if (query) {
+  if (search) {
     pipeline.push({
       $match: {
         $or: [
-          { channelUsername: { $regex: query, $options: 'i' } },
-          { channelFullname: { $regex: query, $options: 'i' } }
+          { channelUsername: { $regex: search, $options: 'i' } },
+          { channelFullname: { $regex: search, $options: 'i' } }
         ]
       }
     })
@@ -126,8 +174,40 @@ const getSubscribedChannels = asyncHandler(async (req, res) => {
     )
 })
 
+/**
+ * @swagger
+ * /subscriptions/channel-subscribers:
+ *   get:
+ *     summary: Get all subscribers of the user's channel
+ *     tags: [Subscription]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortType
+ *         schema:
+ *           type: string
+ *           enum: [inc, dec]
+ *     responses:
+ *       200:
+ *         description: List of channel subscribers
+ */
 const getChannelSubscribers = asyncHandler(async (req, res) => {
-  const { page, limit, query, sortBy, sortType } = req.query
+  const { page, limit, search, sortBy, sortType } = req.query
 
   const pipeline = [
     {
@@ -158,12 +238,12 @@ const getChannelSubscribers = asyncHandler(async (req, res) => {
     }
   ]
 
-  if (query) {
+  if (search) {
     pipeline.push({
       $match: {
         $or: [
-          { subscriberUsername: { $regex: query, $options: 'i' } },
-          { subscriberFullname: { $regex: query, $options: 'i' } }
+          { subscriberUsername: { $regex: search, $options: 'i' } },
+          { subscriberFullname: { $regex: search, $options: 'i' } }
         ]
       }
     })

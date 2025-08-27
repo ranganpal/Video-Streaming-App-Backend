@@ -4,86 +4,40 @@ import { ApiError } from "../utils/apiError.js"
 import { ApiResponse } from "../utils/apiResponse.js"
 import { asyncHandler } from "../utils/asyncHandler.js"
 
-const getVideoViewers = asyncHandler(async (req, res) => {
-  const { videoId, page, limit, query, sortBy, sortType } = req.query
-
-  const pipeline = [
-    {
-      $match: {
-        video: new mongoose.Types.ObjectId(String(videoId))
-      }
-    },
-    {
-      $lookup: {
-        from: "users",
-        localField: "viewer",
-        foreignField: "_id",
-        as: "viewerDetails"
-      }
-    },
-    {
-      $unwind: "$viewerDetails"
-    },
-    {
-      $project: {
-        createdAt: 1,
-        updatedAt: 1,
-        viewerId: "$viewerDetails._id",
-        viewerAvatar: "$viewerDetails.avatar",
-        viewerUsername: "$viewerDetails.username",
-        viewerFullname: "$viewerDetails.fullname",
-      }
-    }
-  ]
-
-  if (query) {
-    pipeline.push({
-      $match: {
-        $or: [
-          { viewerUsername: { $regex: query, $options: 'i' } },
-          { viewerFullname: { $regex: query, $options: 'i' } }
-        ]
-      }
-    })
-  }
-
-  pipeline.push({
-    $sort: {
-      [sortBy || "createdAt"]: sortType === "inc" ? 1 : -1
-    }
-  })
-
-  const options = {
-    page: parseInt(page) || 1,
-    limit: parseInt(limit) || 10,
-    customLabels: {
-      docs: "videoViewers",
-      totalDocs: "totalViewers"
-    }
-  }
-
-  const views = await View.aggregatePaginate(
-    View.aggregate(pipeline),
-    options
-  )
-
-  if (!views || !views.videoViewers) {
-    throw new ApiError(500, "Failed to fetch video viewers")
-  }
-
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        views,
-        "Successfully fetched video viewers"
-      )
-    )
-})
-
+/**
+ * @swagger
+ * /views/watched-videos:
+ *   get:
+ *     summary: Get all videos watched by the current user
+ *     tags: [View]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortType
+ *         schema:
+ *           type: string
+ *           enum: [inc, dec]
+ *     responses:
+ *       200:
+ *         description: List of watched videos
+ */
 const getWatchedVideos = asyncHandler(async (req, res) => {
-  const { page, limit, query, sortBy, sortType } = req.query
+  const { page, limit, search, sortBy, sortType } = req.query
 
   const pipeline = [
     {
@@ -155,13 +109,13 @@ const getWatchedVideos = asyncHandler(async (req, res) => {
     }
   ]
 
-  if (query) {
+  if (search) {
     pipeline.push({
       $match: {
         $or: [
-          { videoTitle: { $regex: query, $options: 'i' } },
-          { ownerUsername: { $regex: query, $options: 'i' } },
-          { ownerFullname: { $regex: query, $options: 'i' } }
+          { videoTitle: { $regex: search, $options: 'i' } },
+          { ownerUsername: { $regex: search, $options: 'i' } },
+          { ownerFullname: { $regex: search, $options: 'i' } }
         ]
       }
     })
@@ -202,7 +156,139 @@ const getWatchedVideos = asyncHandler(async (req, res) => {
     )
 })
 
-const updateWatchHistory = asyncHandler(async (req, res) => {
+/**
+ * @swagger
+ * /views/video-viewers/{videoId}:
+ *   get:
+ *     summary: Get all viewers of a specific video
+ *     tags: [View]
+ *     parameters:
+ *       - in: path
+ *         name: videoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: sortType
+ *         schema:
+ *           type: string
+ *           enum: [inc, dec]
+ *     responses:
+ *       200:
+ *         description: List of viewers for the video
+ */
+const getVideoViewers = asyncHandler(async (req, res) => {
+  const { videoId } = req.params
+  const { page, limit, search, sortBy, sortType } = req.query
+
+  const pipeline = [
+    {
+      $match: {
+        video: new mongoose.Types.ObjectId(String(videoId))
+      }
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "viewer",
+        foreignField: "_id",
+        as: "viewerDetails"
+      }
+    },
+    {
+      $unwind: "$viewerDetails"
+    },
+    {
+      $project: {
+        createdAt: 1,
+        updatedAt: 1,
+        viewerId: "$viewerDetails._id",
+        viewerAvatar: "$viewerDetails.avatar",
+        viewerUsername: "$viewerDetails.username",
+        viewerFullname: "$viewerDetails.fullname",
+      }
+    }
+  ]
+
+  if (search) {
+    pipeline.push({
+      $match: {
+        $or: [
+          { viewerUsername: { $regex: search, $options: 'i' } },
+          { viewerFullname: { $regex: search, $options: 'i' } }
+        ]
+      }
+    })
+  }
+
+  pipeline.push({
+    $sort: {
+      [sortBy || "createdAt"]: sortType === "inc" ? 1 : -1
+    }
+  })
+
+  const options = {
+    page: parseInt(page) || 1,
+    limit: parseInt(limit) || 10,
+    customLabels: {
+      docs: "videoViewers",
+      totalDocs: "totalViewers"
+    }
+  }
+
+  const views = await View.aggregatePaginate(
+    View.aggregate(pipeline),
+    options
+  )
+
+  if (!views || !views.videoViewers) {
+    throw new ApiError(500, "Failed to fetch video viewers")
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        views,
+        "Successfully fetched video viewers"
+      )
+    )
+})
+
+/**
+ * @swagger
+ * /views/remove-from-histroy/{videoId}:
+ *   patch:
+ *     summary: Remove a video from the user's watch history
+ *     tags: [View]
+ *     parameters:
+ *       - in: path
+ *         name: videoId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Video removed from history
+ */
+const removeFromHistory = asyncHandler(async (req, res) => {
   const videoId = req.params.videoId
   const userId = req.user._id
 
@@ -236,7 +322,7 @@ const updateWatchHistory = asyncHandler(async (req, res) => {
 })
 
 export {
-  getVideoViewers,
   getWatchedVideos,
-  updateWatchHistory
+  getVideoViewers,
+  removeFromHistory
 }

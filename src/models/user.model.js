@@ -12,6 +12,46 @@ const imageSchema = new Schema(
   }
 );
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: Unique identifier for the user
+ *         username:
+ *           type: string
+ *           description: Unique username
+ *         fullname:
+ *           type: string
+ *           description: User's full name
+ *         email:
+ *           type: string
+ *           description: User's email address
+ *         password:
+ *           type: string
+ *           description: Hashed password
+ *         avatar:
+ *           type: string
+ *           description: URL to the user's avatar image
+ *         coverImage:
+ *           type: string
+ *           description: URL to the user's cover image
+ *         refreshToken:
+ *           type: string
+ *           description: User's refresh token
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: User creation timestamp
+ *         updatedAt:
+ *           type: string
+ *           format: date-time
+ *           description: User update timestamp
+ */
 const userSchema = new Schema(
   {
     username: {
@@ -22,6 +62,12 @@ const userSchema = new Schema(
       trim: true,
       index: true
     },
+    fullname: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true
+    },
     email: {
       type: String,
       required: true,
@@ -29,11 +75,9 @@ const userSchema = new Schema(
       lowercase: true,
       trim: true
     },
-    fullname: {
+    password: {
       type: String,
-      required: true,
-      trim: true,
-      index: true
+      required: [true, "Password is required"]
     },
     avatar: {
       type: imageSchema,
@@ -41,10 +85,6 @@ const userSchema = new Schema(
     },
     coverImage: {
       type: imageSchema,
-    },
-    password: {
-      type: String,
-      required: [true, "Password is required"]
     },
     refreshToken: {
       type: String
